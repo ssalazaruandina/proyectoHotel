@@ -1,0 +1,214 @@
+<app-navbar class="row"></app-navbar>
+<div class="container-fluid row pe-0 pt-0">
+  <div class="col-lg-7">
+    <div class="container mt-5 ps-4">
+      <div class="main">
+        <div>
+          <h2>Reservar habitacion</h2>
+        </div>
+        <div class="contact-form row">
+          <mat-form-field class="col-lg-6" appearance="outline">
+            <mat-label>Ingrese la fecha de reserva</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input [(ngModel)]="this.reserva.FechaLlegada" matStartDate placeholder="Fecha llegada">
+              <input [(ngModel)]="this.reserva.FechaSalida" matEndDate placeholder="Fecha salida">
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+          <mat-form-field class="col-lg-6" appearance="outline">
+            <mat-label>Numero de habitaciones</mat-label>
+            <input [(ngModel)]="this.reserva.NumHabitaciones" [ngModelOptions]="{standalone: true}"
+              (change)="onChange()" type="number" matInput min="0">
+          </mat-form-field>
+        </div>
+      </div>
+      <section class="main">
+        <form [formGroup]="this.formCliente" class="contact-form row">
+          <div>
+            <h3>Datos generales</h3>
+          </div>
+          <mat-divider></mat-divider>
+          <mat-form-field class="form-field col-lg-4" appearance="fill">
+            <mat-label>Apellido Paterno</mat-label>
+            <input formControlName="ApellidoP" matInput>
+          </mat-form-field>
+          <mat-form-field class="form-field col-lg-4" appearance="fill">
+            <mat-label>Apellido Materno</mat-label>
+            <input formControlName="ApellidoM" matInput>
+          </mat-form-field>
+          <mat-form-field class="form-field col-lg-4" appearance="fill">
+            <mat-label>Nombre</mat-label>
+            <input formControlName="Nombres" matInput>
+          </mat-form-field>
+          <mat-form-field class="form-field col-lg-4" appearance="fill">
+            <mat-label>Documento de identidad</mat-label>
+            <input formControlName="Dni" matInput>
+          </mat-form-field>
+          <mat-form-field class="form-field col-lg-4" appearance="fill">
+            <mat-label>Sexo</mat-label>
+            <mat-select formControlName="Sexo">
+              <mat-option value="F">Femenino</mat-option>
+              <mat-option value="M">Masculino</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="form-field col-lg-4" appearance="fill">
+            <mat-label>Nacionalidad</mat-label>
+            <mat-select formControlName="Nacionalidad">
+              <mat-option *ngFor="let country of listCountries" [value]="country.name">{{country.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="form-field col-lg-6 example-full-width" appearance="fill">
+            <mat-label>Celular</mat-label>
+            <input formControlName="Celular" type="tel" matInput placeholder="000-000-000">
+            <mat-icon matSuffix>phone</mat-icon>
+          </mat-form-field>
+          <mat-form-field class="form-field col-lg-6" appearance="fill">
+            <mat-label>Correo electrónico</mat-label>
+            <input formControlName="Email" matInput placeholder="pat@example.com" required>
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+          </mat-form-field>
+        </form>
+      </section>
+    </div>
+  </div>
+  <div class="col-lg-5 mt-4">
+    <div class="container main">
+      <section class="main car rounded ms-0 p-3 mb-5">
+        <div class="mb-3">
+          <h2>Detalle habitaciones</h2>
+        </div>
+        <div class="no-select my-3 p-3" *ngIf="this.listaCarrito.length==0; else elseCarrito">
+          <span>No ha seleccionado habitaciones</span>
+        </div>
+        <ng-template #elseCarrito>
+          <div *ngFor="let element of this.listaCarrito; index as i">
+            <div class="card mb-3" style="max-width: 540px;">
+              <div class="d-flex p-3">
+                <div class="">
+                  <p class="card-title fw-bold fs-6">Tipo: {{element.Tipo}}</p>
+                  <p class="card-text">Precio: {{element.Precio}}</p>
+                </div>
+                <div class="ms-auto"><button class="btn btn-danger ms-3"
+                    (click)="onEliminarCarrito(i)">Eliminar</button></div>
+              </div>
+            </div>
+            <!-- <div class="card mb-3" style="max-width: 540px;">
+              <div class="row g-0">
+                <div class="col-md-4">
+                  <img [src]="element.Imagen" class="img-fluid rounded-start" alt="imagenHabitacion">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body d-flex d-sm-inline-flex align-items-center">
+                      <div class="m-1">
+                        <h3 class="card-title">Tipo: {{element.Tipo}}</h3>
+                        <p class="card-text">Precio: {{element.Precio}}</p>
+                      </div>
+                    <div><button class="btn btn-danger ms-3" (click)="onEliminarCarrito(i)">Eliminar</button></div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </ng-template>
+        <div class="m-1">
+          <span class="fw-bold fs-6">Total a pagar: </span>
+          <span class="fw-bold fs-6">{{this.precio}}</span>
+        </div>
+      </section>
+      <div class="form-field">
+        <button type="submit" class="submit-btn" [disabled]="this.formCliente.invalid || !this.listaCarrito.length" mat-raised-button data-bs-toggle="modal"
+          data-bs-target="#exampleModal">Pagar</button>
+      </div>
+    </div>
+    <div class="main">
+      <div class="container">
+        <mat-accordion>
+          <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Presione para ver las habitaciones
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="row row-cols-lg-1 row-cols-sm-1 row-cols-md-1">
+              <div *ngFor="let element of this.listaTipoH; index as i">
+                <div class="card mb-3" style="max-width: 540px;">
+                  <div class="row g-0">
+                    <div class="col-md-4">
+                      <img [src]="element.Imagen" class="img-fluid rounded-start" alt="imagenHabitacion">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body d-flex d-sm-inline-flex align-items-center">
+                        <div class="">
+                          <p class="card-title fw-bold fs-6">Tipo: {{element.Tipo}}</p>
+                          <p class="card-text">Precio: {{element.Precio}}</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                  <button class="btn btn-dark" (click)="onAgregarCarrito(i)" [disabled]="this.disabled">Agregar</button>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-l">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title m-0" id="exampleModalLabel">DETALLES DE PAGO</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <span class="pb-1">Numero de tarjeta</span>
+          <div class="col-3 pe-0">
+            <input type="text" class="form-control" placeholder="0000" minlength="0" maxlength="4"
+              aria-label="First name">
+          </div>
+          <div class="col-3 pe-0">
+            <input type="text" class="form-control" placeholder="0000" minlength="0" maxlength="4"
+              aria-label="First name">
+          </div>
+          <div class="col-3 pe-0">
+            <input type="text" class="form-control" placeholder="0000" minlength="0" maxlength="4"
+              aria-label="First name">
+          </div>
+          <div class="col-3 pb-3">
+            <input type="text" class="form-control" placeholder="0000" minlength="0" maxlength="4"
+              aria-label="First name">
+          </div>
+          <div class="col-8">
+            <label class="pb-1" for="Fecha de expiracion">Fecha de expiración</label>
+            <div class="d-flex flex-inline">
+              <input type="text" class="form-control me-3" placeholder="MM" min="0" maxlength="2"
+                aria-label="Fecha de expiracion">
+              <input type="text" class="form-control" placeholder="YY" min="0" maxlength="4"
+                aria-label="Fecha de expiracion">
+            </div>
+          </div>
+          <div class="col-4">
+            <label class="pb-1" for="Cvc">CVC</label>
+            <input type="text" class="form-control" placeholder="000" minlength="0" maxlength="3" aria-label="Cvc">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="onPagar()" class="btn btn-primary" data-bs-dismiss="modal">Confirmar pago</button>
+        <p *ngIf="this.datosIncorrectos==true">xdxdxdd</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+

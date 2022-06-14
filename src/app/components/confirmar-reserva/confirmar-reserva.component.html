@@ -1,0 +1,32 @@
+<app-navbar></app-navbar>
+<div id="main" class="container">
+  <div class="car rounded">
+    <div class="reserve p-3 bg-black">
+      <img src="./assets/logoHostal.png" alt="" width="250px">
+    </div>
+
+    <div class="p-5">
+        <h1>RESERVA DE HABITACIONES</h1>
+        <h2>Codigo reserva: {{this.reserva.CodReserva}}</h2>
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+                <p>Apellidos: {{this.cliente.ApellidoP+" "+this.cliente.ApellidoM}} </p>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                <p>Nombres: {{this.cliente.Nombres}} </p>
+            </div>
+            <div class="col-12">
+                <p>Numero de habitaciones: {{this.reserva.NumHabitaciones}} </p>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <p>Fecha llegada: {{this.reserva.FechaLlegada}} </p>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                <p>Fecha Salida: {{this.reserva.FechaSalida}} </p>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<button class="btn btn-primary" (click)="convertPDF()">Descargar pdf</button>
