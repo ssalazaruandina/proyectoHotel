@@ -95,22 +95,6 @@
                     (click)="onEliminarCarrito(i)">Eliminar</button></div>
               </div>
             </div>
-            <!-- <div class="card mb-3" style="max-width: 540px;">
-              <div class="row g-0">
-                <div class="col-md-4">
-                  <img [src]="element.Imagen" class="img-fluid rounded-start" alt="imagenHabitacion">
-                </div>
-                <div class="col-md-8">
-                  <div class="card-body d-flex d-sm-inline-flex align-items-center">
-                      <div class="m-1">
-                        <h3 class="card-title">Tipo: {{element.Tipo}}</h3>
-                        <p class="card-text">Precio: {{element.Precio}}</p>
-                      </div>
-                    <div><button class="btn btn-danger ms-3" (click)="onEliminarCarrito(i)">Eliminar</button></div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
           </div>
         </ng-template>
         <div class="m-1">
@@ -118,9 +102,12 @@
           <span class="fw-bold fs-6">{{this.precio}}</span>
         </div>
       </section>
-      <div class="form-field">
-        <button type="submit" class="submit-btn" [disabled]="this.formCliente.invalid || !this.listaCarrito.length" mat-raised-button data-bs-toggle="modal"
-          data-bs-target="#exampleModal">Pagar</button>
+      <div class="form-field pb-3">
+        <button type="submit" class="submit-btn" [disabled]="this.formCliente.invalid || !this.listaCarrito.length"
+          data-bs-toggle="modal" data-bs-target="#exampleModal">Pagar</button>
+      </div>
+      <div *ngIf="this.datosIncorrectos==true" class="alert alert-danger m-0" role="alert">
+        No se pudo realizar la operación, intentelo otra vez
       </div>
     </div>
     <div class="main">
@@ -129,7 +116,7 @@
           <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
             <mat-expansion-panel-header>
               <mat-panel-title>
-                Presione para ver las habitaciones
+                Ver habitaciones
               </mat-panel-title>
             </mat-expansion-panel-header>
             <div class="row row-cols-lg-1 row-cols-sm-1 row-cols-md-1">
@@ -203,12 +190,10 @@
           </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" (click)="onPagar()" class="btn btn-primary" data-bs-dismiss="modal">Confirmar pago</button>
-        <p *ngIf="this.datosIncorrectos==true">xdxdxdd</p>
+      <div class="modal-footer d-flex align-items-end flex-column">
+        <button type="button" (click)="onPagar()" class="btn btn-primary" data-bs-dismiss="modal">Confirmar
+          pago</button>
       </div>
     </div>
   </div>
 </div>
-
-

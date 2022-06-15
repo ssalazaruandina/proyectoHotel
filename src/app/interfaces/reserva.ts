@@ -1,7 +1,6 @@
 export interface Reserva {
-    CodReserva: number
+    CodReserva: string
     CodCliente: string
-    CodTipoH: string
     NumHabitaciones: number
     FechaReserva: string
     FechaLlegada: string

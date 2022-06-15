@@ -8,9 +8,8 @@ import { Reserva } from 'src/app/interfaces/reserva';
 export class ReservaService {
   
   private reserva: Reserva = {
-    CodReserva: 0,
+    CodReserva: "",
     CodCliente: "",
-    CodTipoH: "",
     NumHabitaciones: 0,
     FechaReserva: "",
     FechaLlegada: "",

@@ -10,6 +10,7 @@ import { ReservaService } from 'src/app/services/reserva/reserva.service';
 import { FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Countries, countries } from 'src/app/interfaces/shared/countries';
 import { Router } from '@angular/router';
+import { DetalleReservaH } from 'src/app/interfaces/detalleReservaH';
 
 
 @Component({
@@ -33,15 +34,14 @@ export class ReservarClienteComponent implements OnInit {
     Email: new FormControl('')
   });
 
-  range = new FormGroup({
-    start: new FormControl<Date | null>(null),
-    end: new FormControl<Date | null>(null),
-  });
+  // range = new FormGroup({
+  //   start: new FormControl<Date | null>(null),
+  //   end: new FormControl<Date | null>(null),
+  // });
 
-  cliente: Cliente = this.clienteVacio();
   reserva: Reserva = this.reservaVacia();
 
-  reservaCod: number = this.reserva.CodReserva
+  detalleReservaH: DetalleReservaH = this.detalleReservaHVacio();
 
   pago: Pago = this.pagoVacio();
 
@@ -75,9 +75,8 @@ export class ReservarClienteComponent implements OnInit {
   
   reservaVacia(): Reserva {
     return {
-      CodReserva: 0,
+      CodReserva: "",
       CodCliente: "",
-      CodTipoH: "",
       NumHabitaciones: 0,
       FechaReserva: "",
       FechaLlegada: "",
@@ -99,10 +98,18 @@ export class ReservarClienteComponent implements OnInit {
     }
   }
 
+  detalleReservaHVacio(): DetalleReservaH{
+    return {
+      CodDetalleReservaH: "",
+      CodReserva: "",
+      CodTipoH: ""
+    }
+  }
+
   pagoVacio(): Pago{
     return {
       CodPago: "",
-      CodReserva: 0,
+      CodReserva: "",
       Monto: 0
     }
   }
@@ -161,37 +168,50 @@ export class ReservarClienteComponent implements OnInit {
     }
   }
 
+  reservaCod: string = "";
   // Pagando
-  onPagar(){
+  async onPagar(){
     this.formCliente.value.CodCliente = "0001-"+(Math.floor(Math.random() * (9999 - 4000)) + 4000).toString();
-    this.reserva.CodReserva = (Math.floor(Math.random() * (9999 - 4000)) + 4000)
+    this.reserva.CodReserva = (Math.floor(Math.random() * (9999 - 4000)) + 4000).toString()
+    this.reservaCod = this.reserva.CodReserva;
     let tiempoHoy = Date.now()
     this.reserva.FechaReserva = new Date(tiempoHoy).toDateString();
     this.reserva.CodCliente = this.formCliente.value.CodCliente;
-    this.reserva.CodTipoH = 'TH-001';
+    
+    this.detalleReservaH.CodReserva = this.reservaCod;
+
     this.apiReserva.postCliente(this.formCliente.value).subscribe( data => {
-      console.log(data)
+    })
+    
+    this.apiReserva.postReserva(this.reserva).subscribe(data => {
     })
 
-    this.apiReserva.postReserva(this.reserva).subscribe(data => {
-      console.log(data)
-    })
-    let reservaCodNow = this.reserva.CodReserva;
     this.pago.CodPago = (Math.floor(Math.random() * (99999999 - 40000000)) + 40000000).toString();
-    this.pago.CodReserva = reservaCodNow
+    this.pago.CodReserva =  this.reservaCod
     this.pago.Monto = this.precio;
+
     this.apiReserva.postPago(this.pago).subscribe(data => {
-      console.log(data);
-    })
+    })  
+
+    //Detalle de habitaciones en la reserva
+    for(let i = 0; i<this.listaCarrito.length; i++){
+      this.detalleReservaH.CodDetalleReservaH = (Math.floor(Math.random() * (99999999 - 40000000)) + 40000000).toString();
+      this.detalleReservaH.CodTipoH = this.listaCarrito[i].CodTipoH
+      this.apiReserva.postDetalleReservaH(this.detalleReservaH).subscribe(data=>{
+        this.detalleReservaH = this.detalleReservaHVacio();
+      })
+    }
+    
     this.validar(this.formCliente)
-    //HAY ALGO MAL AQUI
+
     this.serviceReserva.setCliente(this.formCliente.value)
     this.serviceReserva.setReserva(this.reserva)
     this.pago = this.pagoVacio();
     this.reserva = this.reservaVacia();
+    this.detalleReservaH = this.detalleReservaHVacio();
     this.formCliente.reset()
     this.precio = 0;
-    this.listaCarrito.length = 0
+    this.listaCarrito = []
 
   }
  
@@ -200,10 +220,10 @@ export class ReservarClienteComponent implements OnInit {
 
   getErrorMessage() {
     if (this.email.hasError('required')) {
-      return 'You must enter a value';
+      return 'Ingrese un email válido';
     }
 
-    return this.email.hasError('email') ? 'Not a valid email' : '';
+    return this.email.hasError('email') ? 'No es un email válido' : '';
   }
 
   public listCountries: Countries[] = countries;

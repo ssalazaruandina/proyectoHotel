@@ -1,5 +1,5 @@
 export interface Pago {
     CodPago: string,
-    CodReserva: number,
+    CodReserva: string,
     Monto: number
 }
